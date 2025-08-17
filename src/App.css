@@ -2,6 +2,8 @@
   display: flex;
   min-height: 100vh;
   transition: all 0.3s ease;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .app.light {
@@ -18,6 +20,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 body {

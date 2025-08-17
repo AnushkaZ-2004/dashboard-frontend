@@ -43,6 +43,8 @@ const Layout = ({ children }) => {
           display: flex;
           min-height: 100vh;
           transition: all 0.3s ease;
+          width: 100%;
+          overflow-x: hidden;
         }
 
         .main-content {
@@ -51,13 +53,19 @@ const Layout = ({ children }) => {
           display: flex;
           flex-direction: column;
           transition: all 0.3s ease;
+          min-width: 0;
+          width: calc(100% - 260px);
+          max-width: calc(100vw - 260px);
         }
 
         .content {
           flex: 1;
           padding: 30px;
           overflow-y: auto;
+          overflow-x: hidden;
           background: transparent;
+          max-width: 100%;
+          box-sizing: border-box;
         }
 
         .layout.light {
@@ -73,6 +81,7 @@ const Layout = ({ children }) => {
           .main-content {
             margin-left: 0;
             width: 100%;
+            max-width: 100vw;
           }
 
           .content {
