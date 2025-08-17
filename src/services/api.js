@@ -1,5 +1,5 @@
 // API service for backend communication
-const API_BASE_URL = 'http://localhost:8080/api/dashboard';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/dashboard';
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -7,16 +7,23 @@ class ApiService {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           ...options.headers,
         },
         ...options,
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
       }
 
-      return await response.json();
+      // Handle empty response
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      } else {
+        return {};
+      }
     } catch (error) {
       console.error(`API request failed for ${endpoint}:`, error);
       throw error;
@@ -40,6 +47,13 @@ class ApiService {
     });
   }
 
+  async updateUser(id, userData) {
+    return this.request(`/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
   async deleteUser(id) {
     return this.request(`/users/${id}`, {
       method: 'DELETE',
@@ -58,6 +72,13 @@ class ApiService {
     });
   }
 
+  async updateOrder(id, orderData) {
+    return this.request(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(orderData),
+    });
+  }
+
   async deleteOrder(id) {
     return this.request(`/orders/${id}`, {
       method: 'DELETE',
@@ -72,6 +93,16 @@ class ApiService {
   // Sales Data
   async getSalesData() {
     return this.request('/sales');
+  }
+
+  // Health check
+  async checkConnection() {
+    try {
+      await this.request('/stats');
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 
